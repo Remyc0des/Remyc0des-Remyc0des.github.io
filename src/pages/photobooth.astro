@@ -1,31 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { ParallaxScroll } from '../components/scroll';
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { getApp, getApps, initializeApp } from "firebase/app"
 
-
-
-
+import Photogallery from '../components/photogallery.astro';
 ---
 
 <Layout>
-	<div id="container">
-	<main>
-		<section id="hero"> 	
-	<h1> add your photo or view others </h1>
-	<input 
-  id="mediaInput"
-  type="file" 
-  accept="image/*,video/*" 
-  capture="environment"
-/>
-
-<button id="uploadBtn">Upload</button>
-<div id="status"></div>
-
-<ParallaxScroll client:only="react" className="" />
-	</section>	
-	</main>
-	</div>
+	<Photogallery />
 </Layout>
 
 
@@ -42,13 +25,12 @@ import { ParallaxScroll } from '../components/scroll';
 		filter: blur(100px);
 	}
 
-	#container {
-		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
-		height: 100%;
-	}
+	
+
 
 	main {
 		height: 100%;
+		
 		display: flex;
 		justify-content: center;
 	}
@@ -71,101 +53,25 @@ import { ParallaxScroll } from '../components/scroll';
 		font-size: 22px;
 		margin-top: 0.25em;
 	}
-
-	#links {
-		display: flex;
-		gap: 16px;
+	#container {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		height: 100%;
+	}
+	#gallery {
+		display:flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 16px;
+		padding: 8px
+	}
+	#gallery img {
+		width: 150px;
+		height: 150px;
+		object-fit: cover;
+		display: blcok;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	}
 
-	#links a {
-		display: flex;
-		align-items: center;
-		padding: 10px 12px;
-		color: #111827;
-		text-decoration: none;
-		transition: color 0.2s;
-	}
-
-	#links a:hover {
-		color: rgb(78, 80, 86);
-	}
-
-	#links a svg {
-		height: 1em;
-		margin-left: 8px;
-	}
-
-	#links a.button {
-		color: white;
-		background: linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%);
-		box-shadow:
-			inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-			inset 0 -2px 0 rgba(0, 0, 0, 0.24);
-		border-radius: 10px;
-	}
-
-	#links a.button:hover {
-		color: rgb(230, 230, 230);
-		box-shadow: none;
-	}
-
-	pre {
-		font-family:
-			ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono',
-			monospace;
-		font-weight: normal;
-		background: linear-gradient(14deg, #d83333 0%, #f041ff 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		margin: 0;
-	}
-
-	h2 {
-		margin: 0 0 1em;
-		font-weight: normal;
-		color: #111827;
-		font-size: 20px;
-	}
-
-	p {
-		color: #4b5563;
-		font-size: 16px;
-		line-height: 24px;
-		letter-spacing: -0.006em;
-		margin: 0;
-	}
-
-	code {
-		display: inline-block;
-		background:
-			linear-gradient(66.77deg, #f3cddd 0%, #f5cee7 100%) padding-box,
-			linear-gradient(155deg, #d83333 0%, #f041ff 18%, #f5cee7 45%) border-box;
-		border-radius: 8px;
-		border: 1px solid transparent;
-		padding: 6px 8px;
-	}
-
-	.box {
-		padding: 16px;
-		background: rgba(255, 255, 255, 1);
-		border-radius: 16px;
-		border: 1px solid white;
-	}
-
-	#news {
-		position: absolute;
-		bottom: 16px;
-		right: 16px;
-		max-width: 300px;
-		text-decoration: none;
-		transition: background 0.2s;
-		backdrop-filter: blur(50px);
-	}
-
-	#news:hover {
-		background: rgba(255, 255, 255, 0.55);
-	}
 
 	@media screen and (max-height: 368px) {
 		#news {
@@ -205,10 +111,12 @@ import { ParallaxScroll } from '../components/scroll';
 	}
 </style>
 
-<script>import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+<script>import { getStorage, ref, uploadBytes, getDownloadURL, listAll} from "firebase/storage";
 	import { getFirestore, collection, addDoc } from "firebase/firestore";
 	import { initializeApp } from "firebase/app";
 	import { getAuth } from "firebase/auth";
+	
+	
 	const firebaseConfig = {
 	  apiKey: "AIzaSyBzuoGT6ep4fwpgsyItZIXp07zWKnlF5Q4",
 	  authDomain: "partyline-1ba54.firebaseapp.com",
@@ -220,13 +128,34 @@ import { ParallaxScroll } from '../components/scroll';
 	};
 	const app = initializeApp(firebaseConfig);
 	const storage = getStorage(app);
-	const db = getFirestore(app);
+	//const db = getFirestore(app);
 	const auth = getAuth(app);
 	
 	const fileInput = document.getElementById('mediaInput') as HTMLInputElement;
 	const uploadBtn = document.getElementById('uploadBtn');
 	const status = document.getElementById('status');
-	
+	const imagesRef = ref(storage, 'uploads/');
+	const gallery = document.getElementById('gallery');
+	//const imageContainer = document.getElementById('gallery'); // Assuming you have an element with id="image-container"
+
+
+	listAll(imagesRef)
+  .then(async (res) => {
+	for (const folderRef of res.prefixes) {
+		const userFolder = await listAll(folderRef);
+		for (const fileRef of userFolder.items) {
+			const url = await getDownloadURL(fileRef);
+			const img = document.createElement('img')
+			img.src = url;
+			gallery!.appendChild(img);
+		}
+	}
+  })
+  .catch((error) => {
+	console.error("error listing images:", error)
+  })
+
+
 	uploadBtn!.addEventListener('click', async () => {
 		const file = fileInput!.files![0];
 		if (!file) {
@@ -238,20 +167,25 @@ import { ParallaxScroll } from '../components/scroll';
 		  const user = auth.currentUser;
 		  const fileRef = ref(storage, `uploads/${user!.uid}/${Date.now()}_${file.name}`);
 		  await uploadBytes(fileRef, file);
-		  const fileURL = await getDownloadURL(fileRef);
+		  //had to comment this line out cause it was causing two coppies of every photo to be sent to the db
+		  
+		  //const fileURL = await getDownloadURL(fileRef);
 	
-		  // Optional: Save URL and metadata to Firestore
-		  await addDoc(collection(db, "uploads"), {
-			uid: user!.uid,
-			url: fileURL,
-			fileName: file.name,
-			timestamp: new Date()
-		  });
+		  // commented this bit out its what was causing failure when uploading
+		 // await addDoc(collection(db, "uploads"), {
+		//	uid: user!.uid,
+		//	url: fileURL,
+			//fileName: file.name,
+			//timestamp: new Date()
+		  //});
 	
 		  status!.textContent = "Upload successful!";
 		} catch (err) {
 		  console.error(err);
 		  status!.textContent = "Upload failed. Try again.";
 		}
+
+		
 	  });
+	  
 	  </script>

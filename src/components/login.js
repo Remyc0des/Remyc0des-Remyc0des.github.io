@@ -2,7 +2,7 @@
 	// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth, signInAnonymously, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,6 +24,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); 
 const db = getFirestore(app);
+const presetPassword = "NYCiSch00lprom25!"; 
 
 
 	document.addEventListener('DOMContentLoaded', () => {
@@ -34,7 +35,7 @@ const nameInput = document.getElementById('nameInput');
 
 const emailInput = document.getElementById('emailInput');
 
-const accessCodeInput = document.getElementById('accessCodeInput');
+const accessCodeInput_presetpassword = document.getElementById('accessCodeInput');
 
 const messageArea = document.getElementById('messageArea');
 const correctAccessCode = 'NYCiSch00lprom25'; 
@@ -47,7 +48,7 @@ const name = nameInput.value.trim();
 
 const email = emailInput.value.trim();
 
-const enteredCode = accessCodeInput.value.trim();
+const enteredCode = accessCodeInput_presetpassword.value.trim();
 
 
 messageArea.textContent = ''; // Clear previous messages
@@ -76,50 +77,40 @@ if (enteredCode !== correctAccessCode) {
 }
 
 
-// If code is correct, proceed with Firebase Anonymous Auth and Firestore save
+// If shits smooth should follow to this
 
 try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, presetPassword);
+    
+    const user = userCredential.user;
+    console.log('New user created successfully with preset password:', user.uid);
 
+    //brings them to photobooth page
+    window.location.href = '/photobooth';
+  
+  } catch (error) {
+    // error handeling
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  
+    if (errorCode === 'auth/email-already-in-use') {
+        window.location.href = '/photobooth';
 
-	const userCredential = await signInAnonymously(auth);
-
-	const user = userCredential.user;
-
-	console.log('Signed in anonymously with UID:', user.uid);
-
-
-
-	const userRef = doc(db, 'attendees', user.uid);
-
-	await setDoc(userRef, {
-
-		name: name,
-
-		email: email,
-
-		timestamp: new Date()
-
-	});
-
-	console.log('User info saved to Firestore:', user.uid);
-
-
-
-
-	window.location.href = '/photobooth'; 
-
-
-} catch (error) {
-
-	
-
-	console.error('Login or Firestore save failed:', error);
-
-	messageArea.textContent = 'An error occurred during login. Please try again.';
-
-}
+    } else if (errorCode === 'auth/invalid-email') {
+      console.error('The email address is invalid.');
+    }  else if (errorCode === 'auth/operation-not-allowed') {
+       // email+password auth not verified
+       console.error('Email/Password sign-in is not enabled for this project.');
+    }
+    else {
+      console.error('Error creating user:', errorMessage);
+    }
+  }
 
 });
 
 });
+
+///NEWWW LOGIC
+
 

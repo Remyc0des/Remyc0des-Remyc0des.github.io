@@ -2,11 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import { ParallaxScroll } from '../components/scroll';
 
-const myImages = [
-  '/image1.jpg',
-  '/image2.png',
-  '/image3.gif',
-];
+
+
+
 ---
 
 <Layout>
@@ -15,12 +13,16 @@ const myImages = [
 		<section id="hero"> 	
 	<h1> add your photo or view others </h1>
 	<input 
+  id="mediaInput"
   type="file" 
   accept="image/*,video/*" 
-  capture="environment" 
->
+  capture="environment"
+/>
 
-	<ParallaxScroll client:only="react" images={myImages} className="" />
+<button id="uploadBtn">Upload</button>
+<div id="status"></div>
+
+<ParallaxScroll client:only="react" className="" />
 	</section>	
 	</main>
 	</div>
@@ -203,3 +205,53 @@ const myImages = [
 	}
 </style>
 
+<script>import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+	import { getFirestore, collection, addDoc } from "firebase/firestore";
+	import { initializeApp } from "firebase/app";
+	import { getAuth } from "firebase/auth";
+	const firebaseConfig = {
+	  apiKey: "AIzaSyBzuoGT6ep4fwpgsyItZIXp07zWKnlF5Q4",
+	  authDomain: "partyline-1ba54.firebaseapp.com",
+	  projectId: "partyline-1ba54",
+	  storageBucket: "partyline-1ba54.firebasestorage.app",
+	  messagingSenderId: "845616501130",
+	  appId: "1:845616501130:web:bd5ca4f04f5177c08b7873",
+	  measurementId: "G-9X0WXSZ0P6"
+	};
+	const app = initializeApp(firebaseConfig);
+	const storage = getStorage(app);
+	const db = getFirestore(app);
+	const auth = getAuth(app);
+	
+	const fileInput = document.getElementById('mediaInput') as HTMLInputElement;
+	const uploadBtn = document.getElementById('uploadBtn');
+	const status = document.getElementById('status');
+	
+	uploadBtn!.addEventListener('click', async () => {
+		const file = fileInput!.files![0];
+		if (!file) {
+		  status!.textContent = "Please select a file first.";
+		  return;
+		}
+	
+		try {
+		  const user = auth.currentUser;
+		  const fileRef = ref(storage, `uploads/${user!.uid}/${Date.now()}_${file.name}`);
+		  await uploadBytes(fileRef, file);
+		  const fileURL = await getDownloadURL(fileRef);
+	
+		  // Optional: Save URL and metadata to Firestore
+		  await addDoc(collection(db, "uploads"), {
+			uid: user!.uid,
+			url: fileURL,
+			fileName: file.name,
+			timestamp: new Date()
+		  });
+	
+		  status!.textContent = "Upload successful!";
+		} catch (err) {
+		  console.error(err);
+		  status!.textContent = "Upload failed. Try again.";
+		}
+	  });
+	  </script>

@@ -1,15 +1,23 @@
 ---
 import background from '../assets/background.svg';
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInAnonymously } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 ---
 <div id="container">
 	<img id="background" src={background.src} alt="" fetchpriority="high" />
     <main>
-        <form>
-            <input type="text" id="fname" name="fname" placeholder="Name">
-            <input type="email" id="email" name="email" placeholder="Email">
-            <input type="text" id="acess_code" name="acesscode" placeholder="Acess Code">
+		<section id="hero">
+        <form id="loginForm">
+            <input type="text" id="nameInput" name="fname" placeholder="Name">
+            <input type="email" id="emailInput" name="email" placeholder="Email">
+            <input type="text" id="accessCodeInput" name="acesscode" placeholder="Acess Code">
+			<button type="submit" id="loginButton">Enter</button> 
+			<p id="messageArea" style="color: red;"></p>
+
 
         </form>
+	</section>
 
     </main>
 
@@ -39,6 +47,12 @@ import background from '../assets/background.svg';
 		height: 100%;
 		display: flex;
 		justify-content: center;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		align-items: center;
 	}
 
 	#hero {
@@ -186,3 +200,5 @@ import background from '../assets/background.svg';
 		}
 	}
 </style>
+
+<script src="./login.js"></script>

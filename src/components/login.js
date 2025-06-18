@@ -2,7 +2,7 @@
 	// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInAnonymously, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -94,9 +94,15 @@ try {
     const errorMessage = error.message;
   
     if (errorCode === 'auth/email-already-in-use') {
+      try {
+        await signInWithEmailAndPassword(auth, email, presetPassword);
         window.location.href = '/photobooth';
+      } catch (loginError) {
+        messageArea.textContent = 'Login failed: ' + loginError.message;
+      }
+    }
 
-    } else if (errorCode === 'auth/invalid-email') {
+     else if (errorCode === 'auth/invalid-email') {
       console.error('The email address is invalid.');
     }  else if (errorCode === 'auth/operation-not-allowed') {
        // email+password auth not verified

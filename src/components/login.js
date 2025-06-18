@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); 
 const db = getFirestore(app);
-const presetPassword = "NYCiSch00lprom25!"; 
+const presetPassword = "NYCiSch00lprom25"; 
 
 
 	document.addEventListener('DOMContentLoaded', () => {

@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); 
 const db = getFirestore(app);
-const presetPassword = "NYCiSch00lprom25"; 
+const presetPassword = ""; //if youre building your own version put your own group code here
 
 
 	document.addEventListener('DOMContentLoaded', () => {
@@ -36,7 +36,7 @@ const emailInput = document.getElementById('emailInput');
 const accessCodeInput_presetpassword = document.getElementById('accessCodeInput');
 
 const messageArea = document.getElementById('messageArea');
-const correctAccessCode = 'NYCiSch00lprom25'; 
+const correctAccessCode = ''; //if youre building your own version put your own group code here
 loginForm.addEventListener('submit', async (event) => {
 
 

@@ -7,8 +7,6 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBzuoGT6ep4fwpgsyItZIXp07zWKnlF5Q4",
   authDomain: "partyline-1ba54.firebaseapp.com",
@@ -41,7 +39,6 @@ const messageArea = document.getElementById('messageArea');
 const correctAccessCode = 'NYCiSch00lprom25'; 
 loginForm.addEventListener('submit', async (event) => {
 
-event.preventDefault(); // Prevent page refresh
 
 
 const name = nameInput.value.trim();
@@ -51,10 +48,9 @@ const email = emailInput.value.trim();
 const enteredCode = accessCodeInput_presetpassword.value.trim();
 
 
-messageArea.textContent = ''; // Clear previous messages
+messageArea.textContent = ''; 
 
 
-// Basic validation
 
 if (!name || !email || !enteredCode) {
 
@@ -65,8 +61,6 @@ if (!name || !email || !enteredCode) {
 }
 
 
-
-// Simple access code check (client-side - see security note above)
 
 if (enteredCode !== correctAccessCode) {
 

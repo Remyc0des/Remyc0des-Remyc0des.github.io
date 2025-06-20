@@ -1,48 +1,27 @@
-# Astro Starter Kit: Basics
+# 📸 PartyLine Photo Booth
 
-```sh
-npm create astro@latest -- --template basics
-```
+A sleek, Firebase-powered web photo gallery where users can anonymously upload and view photos through a dark, modern UI. Built using **Astro**, **Firebase**, and **Vanilla JavaScript** — designed for ease of use at community events, parties, or digital art projects.
+I built this app personally so me and my friends could have a sort of shared digital meory of our senior prom :) was really dope and it was my first time getting to deploy a site even though I build them all the time
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## 🚀 Features
 
-## 🚀 Project Structure
+- 🔐 Anonymous login with email + access code
+- 📤 Upload images or short videos to a personal folder in Firebase Storage
+- 🖼️ View public uploads from all users in a dynamic, scrollable gallery
+- 🌑 Modern, dark-themed UI with blur effects and responsive layout
+- ⚡ Built with Astro for fast performance and modularity
 
-Inside of your Astro project, you'll see the following folders and files:
+---
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## 🛠️ Built With
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+- [Astro](https://astro.build/) – Static-first frontend framework
+- [Firebase](https://firebase.google.com/) – Authentication, Firestore, and Storage
+- [Vanilla JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – All interactivity
+- Custom CSS – Modern, responsive UI with clean effects
 
-## 🧞 Commands
+---
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
